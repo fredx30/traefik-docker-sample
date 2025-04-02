@@ -10,7 +10,7 @@ tls:
 
 http:
   serversTransports:
-    nginx-transport:
+    tls-self-signed-transport:
       rootCAs:
         - /etc/traefik/tls/ca.crt
       certificates:
@@ -29,6 +29,6 @@ http:
   services:
     nginx:
       loadBalancer:
-        serversTransport: nginx-transport
+        serversTransport: tls-self-signed-transport
         servers:
-          - url: https://nginx.local:443
+          - url: http://nginx:80
