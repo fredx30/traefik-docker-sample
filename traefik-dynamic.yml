@@ -11,8 +11,8 @@ tls:
 http:
   serversTransports:
     nginx-transport:
-      #rootCAs:
-      #  - /etc/traefik/tls/ca.pem
+      rootCAs:
+        - /etc/traefik/tls/ca.crt
       certificates:
         - certFile: /etc/traefik/tls/tls.crt
           keyFile: /etc/traefik/tls/tls.key
@@ -23,6 +23,7 @@ http:
       service: nginx
       entryPoints:
         - websecure
+        - web
       tls: {}
 
   services:
