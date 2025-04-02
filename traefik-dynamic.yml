@@ -1,0 +1,33 @@
+tls:
+  certificates:
+    - certFile: "/etc/traefik/tls/tls.crt"
+      keyFile: "/etc/traefik/tls/tls.key"
+  stores:
+    default:
+      defaultCertificate:
+        certFile: "/etc/traefik/tls/tls.crt"
+        keyFile: "/etc/traefik/tls/tls.key"
+
+http:
+  serversTransports:
+    nginx-transport:
+      #rootCAs:
+      #  - /etc/traefik/tls/ca.pem
+      certificates:
+        - certFile: /etc/traefik/tls/tls.crt
+          keyFile: /etc/traefik/tls/tls.key
+
+  routers:
+    nginx:
+      rule: "Host(`nginx.local`)" #Host(`localhost`) && PathPrefix(`/nginx`)
+      service: nginx
+      entryPoints:
+        - websecure
+      tls: {}
+
+  services:
+    nginx:
+      loadBalancer:
+        serversTransport: nginx-transport
+        servers:
+          - url: https://nginx.local:443

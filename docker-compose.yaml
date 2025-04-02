@@ -1,0 +1,38 @@
+services:
+
+  traefik:
+    image: "traefik:v3.3"
+    command:
+      - --configFile="/etc/traefik/traefik.yml"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik.yml:/etc/traefik/traefik.yml
+      - ./traefik-dynamic.yml:/etc/traefik/traefik-dynamic.yml
+      - ./certs:/etc/traefik/tls
+
+  whoami:
+    image: "traefik/whoami"
+    ports:
+      - 8083:80
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami.rule=Host(`whoami.local`)"
+      - "traefik.http.routers.whoami.entrypoints=web"
+
+  podinfo:
+    image: stefanprodan/podinfo
+    ports:
+      - 8082:80
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.podinfo.rule=Host(`podinfo.local`)"
+      - "traefik.http.routers.podinfo.entrypoints=websecure"
+
+  nginx:
+    image: "nginx:latest"
+    ports:
+      - 8081:80
